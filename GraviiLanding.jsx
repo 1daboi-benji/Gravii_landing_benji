@@ -3,24 +3,19 @@ import { useState, useEffect, useRef } from "react";
 const FONTS_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
-  }
-
-  @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 0 rgba(127,155,170,0); }
-    50% { box-shadow: 0 0 40px rgba(127,155,170,0.08); }
-  }
-
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
 
   ::selection {
-    background: rgba(127,155,170,0.3);
+    background: rgba(240,237,230,0.2);
     color: #F0EDE6;
+  }
+
+  @keyframes scanlines {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 4px; }
   }
 
   * { box-sizing: border-box; }
@@ -93,15 +88,15 @@ export default function GraviiLanding() {
         background: scrolled ? "rgba(0,0,0,0.8)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         transition: "all 0.4s ease",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "1px solid transparent",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.18)" : "1px solid transparent",
       }}>
         <span style={{ fontFamily: gambarino, fontSize: "22px", color: "#F0EDE6", letterSpacing: "-0.5px" }}>Gravii</span>
         <button style={{
-          fontFamily: spaceMono, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
+          fontFamily: spaceMono, fontSize: "15px", letterSpacing: "2px", textTransform: "uppercase",
           color: "#000", background: "#F0EDE6", border: "none", padding: "10px 24px",
           borderRadius: "6px", cursor: "pointer", transition: "all 0.3s ease",
         }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#7F9BAA"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(240,237,230,0.85)"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "#F0EDE6"; }}
         >Launch App</button>
       </nav>
@@ -110,169 +105,231 @@ export default function GraviiLanding() {
       <section style={{
         minHeight: "100vh", display: "flex", flexDirection: "column",
         justifyContent: "center", alignItems: "center", textAlign: "center",
-        padding: "120px 40px 80px", position: "relative",
+        padding: "120px 40px 80px", position: "relative", overflow: "hidden",
       }}>
+        {/* Background radial glow */}
         <div style={{
-          width: "280px", height: "280px", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(127,155,170,0.08) 0%, transparent 70%)",
-          marginBottom: "48px", animation: "float 6s ease-in-out infinite",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }} />
+
+        {/* Main title with metallic gradient */}
+        <div style={{ position: "relative", marginBottom: "8px" }}>
+          <h1 style={{
+            fontFamily: gambarino, fontSize: "clamp(56px, 9vw, 120px)", fontWeight: 400,
+            margin: 0, letterSpacing: "-2px", lineHeight: 1.05,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 40%, rgba(255,255,255,0.15) 100%)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>
+            Connect once,<br />Live differently.
+          </h1>
+
+          {/* Scanline overlay */}
           <div style={{
-            width: "120px", height: "120px", borderRadius: "50%",
-            border: "1px solid rgba(127,155,170,0.15)", animation: "pulseGlow 4s ease-in-out infinite",
+            position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.06,
+            background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.4) 2px, rgba(255,255,255,0.4) 4px)",
+            animation: "scanlines 0.3s linear infinite",
           }} />
         </div>
 
-        <h1 style={{
-          fontFamily: gambarino, fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 400,
-          color: "#F0EDE6", margin: "0 0 16px", letterSpacing: "-1px", lineHeight: 1.1,
+        {/* Reflection */}
+        <div style={{
+          position: "relative", overflow: "hidden", height: "80px", marginBottom: "40px",
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.15), transparent)",
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.15), transparent)",
         }}>
-          Connect once,<br />live differently.
-        </h1>
+          <div style={{
+            fontFamily: gambarino, fontSize: "clamp(56px, 9vw, 120px)", fontWeight: 400,
+            letterSpacing: "-2px", lineHeight: 1.05,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 80%)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            transform: "scaleY(-1)", transformOrigin: "top",
+          }}>
+            Connect once,<br />Live differently.
+          </div>
+        </div>
 
+        {/* Subtitle */}
         <p style={{
-          fontFamily: spaceMono, fontSize: "14px", color: "rgba(255,255,255,0.35)",
-          letterSpacing: "1px", margin: "0 0 48px",
+          fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.4)",
+          letterSpacing: "2px", margin: "0 0 48px", textTransform: "uppercase",
         }}>
-          We've burnt the old playbook.
+          "We've burnt the old playbook"
         </p>
 
-        <button style={{
-          fontFamily: spaceMono, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
-          color: "#000", background: "#F0EDE6", border: "none", padding: "14px 36px",
-          borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease",
+        <div style={{
+          display: "inline-block", padding: "1px", borderRadius: "8px",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.08), rgba(255,255,255,0.25))",
+          transition: "all 0.4s ease", cursor: "pointer",
         }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(240,237,230,0.15)"; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
-        >Join Waitlist</button>
+          onMouseEnter={e => { e.currentTarget.style.background = "linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.15), rgba(255,255,255,0.45))"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.08), rgba(255,255,255,0.25))"; e.currentTarget.style.transform = "translateY(0)"; }}
+        >
+          <button style={{
+            fontFamily: spaceMono, fontSize: "14px", letterSpacing: "3px", textTransform: "uppercase",
+            background: "#000", border: "none", borderRadius: "7px",
+            padding: "16px 40px", cursor: "pointer", transition: "all 0.4s ease",
+            color: "transparent",
+            backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4), rgba(255,255,255,0.7))",
+            WebkitBackgroundClip: "text", backgroundClip: "text",
+          }}>Join Waitlist</button>
+        </div>
 
         <div style={{
           position: "absolute", bottom: "40px", display: "flex",
           flexDirection: "column", alignItems: "center", gap: "8px", opacity: 0.2,
         }}>
-          <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, rgba(255,255,255,0.3), transparent)" }} />
+          <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, rgba(255,255,255,0.45), transparent)" }} />
         </div>
       </section>
 
       {/* PROBLEM */}
       <section style={{ padding: "100px 40px", maxWidth: "1200px", margin: "0 auto" }}>
         <RevealSection>
-          <p style={{ fontFamily: spaceMono, fontSize: "10px", color: "#7F9BAA", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>The problem</p>
+          <p style={{ fontFamily: spaceMono, fontSize: "18px", color: "rgba(240,237,230,0.6)", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>The problem</p>
         </RevealSection>
         <RevealSection delay={0.1}>
-          <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 48px", lineHeight: 1.15, maxWidth: "700px" }}>
+          <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 48px", lineHeight: 1.15 }}>
             Tired of starting from zero?
           </h2>
         </RevealSection>
         <RevealSection delay={0.2}>
-          <div style={{ display: "flex", gap: "16px", marginBottom: "48px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "0", marginBottom: "48px", alignItems: "stretch" }}>
             {["Sign up\nagain", "Verify\nagain", "Prove\nagain"].map((text, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div key={i} style={{ display: "flex", alignItems: "stretch", flex: 1 }}>
                 <div style={{
-                  background: "#111111", border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: "16px", padding: "28px 36px", minWidth: "160px", textAlign: "center",
+                  flex: 1, background: "#050505", border: "1px solid rgba(255,255,255,0.18)",
+                  borderRadius: "16px", padding: "36px 28px", textAlign: "center",
+                  display: "flex", flexDirection: "column", justifyContent: "center",
                 }}>
-                  <span style={{ fontFamily: spaceMono, fontSize: "9px", color: "rgba(255,255,255,0.2)", letterSpacing: "2px", textTransform: "uppercase" }}>
+                  <span style={{ fontFamily: spaceMono, fontSize: "16px", color: "rgba(255,255,255,0.6)", letterSpacing: "2px", textTransform: "uppercase" }}>
                     Service {String.fromCharCode(65 + i)}
                   </span>
-                  <p style={{ fontFamily: spaceMono, fontSize: "13px", color: "rgba(255,255,255,0.5)", margin: "12px 0 0", whiteSpace: "pre-line", lineHeight: 1.5 }}>{text}</p>
+                  <p style={{ fontFamily: spaceMono, fontSize: "16px", color: "rgba(255,255,255,0.6)", margin: "12px 0 0", whiteSpace: "pre-line", lineHeight: 1.5 }}>{text}</p>
                 </div>
-                {i < 2 && <span style={{ fontFamily: spaceMono, fontSize: "18px", color: "rgba(255,255,255,0.15)" }}>→</span>}
+                {i < 2 && <div style={{ display: "flex", alignItems: "center", padding: "0 16px" }}>
+                  <span style={{ fontFamily: spaceMono, fontSize: "18px", color: "rgba(255,255,255,0.45)" }}>→</span>
+                </div>}
               </div>
             ))}
           </div>
         </RevealSection>
         <RevealSection delay={0.3}>
-          <p style={{ fontFamily: spaceMono, fontSize: "14px", color: "rgba(255,255,255,0.35)", lineHeight: 2, maxWidth: "520px" }}>
-            Every new platform asks you to prove yourself all over again. Your value. Your history. Your worth.<br />Over and over.
+          <p style={{ fontFamily: spaceMono, fontSize: "16px", color: "rgba(255,255,255,0.6)", lineHeight: 2 }}>
+            Every new platform asks you to prove yourself all over again.<br />Your value. Your history. Your worth. Over and over.
           </p>
         </RevealSection>
       </section>
 
       {/* SOLUTION */}
       <section style={{ padding: "100px 40px", maxWidth: "1200px", margin: "0 auto" }}>
-        <RevealSection>
-          <p style={{ fontFamily: spaceMono, fontSize: "10px", color: "#7F9BAA", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>The solution</p>
-        </RevealSection>
-        <RevealSection delay={0.1}>
-          <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 64px", lineHeight: 1.15, maxWidth: "700px" }}>
-            One connection.<br />Every door opens.
-          </h2>
-        </RevealSection>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
-          {[
-            { num: "01", title: "Connect", desc: "Link your account once. We read your digital footprint." },
-            { num: "02", title: "Verify", desc: "Your scattered activity becomes one universal digital status." },
-            { num: "03", title: "Enjoy", desc: "Benefits and privileges — waiting before you even look." },
-          ].map((step, i) => (
-            <RevealSection key={i} delay={0.15 * (i + 1)}>
-              <div style={{
-                display: "flex", alignItems: "flex-start", gap: "32px",
-                padding: "32px 0", borderTop: "1px solid rgba(255,255,255,0.06)",
-              }}>
-                <span style={{ fontFamily: spaceMono, fontSize: "11px", color: "#7F9BAA", letterSpacing: "2px", minWidth: "32px", paddingTop: "4px" }}>{step.num}</span>
-                <div>
-                  <h3 style={{ fontFamily: gambarino, fontSize: "28px", fontWeight: 400, color: "#F0EDE6", margin: "0 0 10px" }}>{step.title}</h3>
-                  <p style={{ fontFamily: spaceMono, fontSize: "13px", color: "rgba(255,255,255,0.35)", lineHeight: 1.8, margin: 0, maxWidth: "440px" }}>{step.desc}</p>
-                </div>
-              </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "start" }}>
+          <div style={{ position: "sticky", top: "120px" }}>
+            <RevealSection>
+              <p style={{ fontFamily: spaceMono, fontSize: "18px", color: "rgba(240,237,230,0.6)", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>The solution</p>
             </RevealSection>
-          ))}
+            <RevealSection delay={0.1}>
+              <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0", lineHeight: 1.15 }}>
+                One connection.<br />Every door opens.
+              </h2>
+            </RevealSection>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {[
+              { num: "01", title: "Connect", desc: "Link your account once. We read your digital footprint." },
+              { num: "02", title: "Verify", desc: "Your scattered activity becomes one universal digital status." },
+              { num: "03", title: "Enjoy", desc: "Benefits and privileges — waiting before you even look." },
+            ].map((step, i) => (
+              <RevealSection key={i} delay={0.15 * (i + 1)}>
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: "24px",
+                  padding: "36px 0", borderTop: "1px solid rgba(255,255,255,0.12)",
+                }}>
+                  <span style={{ fontFamily: spaceMono, fontSize: "15px", color: "rgba(240,237,230,0.6)", letterSpacing: "2px", minWidth: "32px", paddingTop: "6px" }}>{step.num}</span>
+                  <div>
+                    <h3 style={{ fontFamily: gambarino, fontSize: "28px", fontWeight: 400, color: "#F0EDE6", margin: "0 0 12px" }}>{step.title}</h3>
+                    <p style={{ fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, margin: 0 }}>{step.desc}</p>
+                  </div>
+                </div>
+              </RevealSection>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* VALUE PROPS */}
+      {/* WHAT CHANGES */}
       <section style={{ padding: "100px 40px", maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", minWidth: "900px" }}>
-          {[
-            { title: "Digital Status", sub: "Your profile attracts the right deals.", desc: "No more searching. Your digital footprint does the work — opportunities come to you." },
-            { title: "Borderless Benefits", sub: "Finance to lifestyle, all in one place.", desc: "From exclusive investments to premium perks — everything optimized for your profile." },
-            { title: "Personal Concierge", sub: "It finds you before you search.", desc: "Our engine curates what matters most and places it in your space. Just log in and enjoy." },
-          ].map((item, i) => (
-            <RevealSection key={i} delay={0.1 * (i + 1)}>
-              <div style={{
-                background: "#111111", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2rem",
-                padding: "40px 36px", transition: "all 0.4s ease", cursor: "default",
-                height: "100%", display: "flex", flexDirection: "column", gap: "16px",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(127,155,170,0.2)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.transform = "translateY(0)"; }}
-              >
-                <span style={{ fontFamily: spaceMono, fontSize: "9px", color: "#7F9BAA", letterSpacing: "2px" }}>0{i + 1}</span>
-                <h3 style={{ fontFamily: gambarino, fontSize: "26px", fontWeight: 400, color: "#F0EDE6", margin: 0 }}>{item.title}</h3>
-                <p style={{ fontFamily: spaceMono, fontSize: "12px", color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1.6 }}>{item.sub}</p>
-                <p style={{ fontFamily: spaceMono, fontSize: "11px", color: "rgba(255,255,255,0.25)", margin: 0, lineHeight: 1.8, marginTop: "auto" }}>{item.desc}</p>
-              </div>
-            </RevealSection>
-          ))}
-        </div>
+
+        {/* WITHOUT GRAVII card */}
+        <RevealSection>
+          <p style={{ fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.4)", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>Without Gravii</p>
+        </RevealSection>
+        <RevealSection delay={0.1}>
+          <div style={{
+            background: "transparent", border: "1px dashed rgba(255,255,255,0.12)", borderRadius: "2rem",
+            padding: "40px 44px", marginBottom: "20px",
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
+              {[
+                "Googling 'best yields' every morning",
+                "Juggling platforms for scattered perks",
+                "Browsing feeds hoping to find what fits",
+              ].map((text, i) => (
+                <p key={i} style={{
+                  fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.35)",
+                  lineHeight: 1.7, fontStyle: "italic", margin: 0,
+                }}>{text}</p>
+              ))}
+            </div>
+          </div>
+        </RevealSection>
+
+        {/* WITH GRAVII card */}
+        <RevealSection delay={0.2}>
+          <p style={{ fontFamily: spaceMono, fontSize: "15px", color: "#F0EDE6", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px", marginTop: "40px" }}>With Gravii</p>
+        </RevealSection>
+        <RevealSection delay={0.3}>
+          <div style={{
+            background: "#050505", border: "1px solid rgba(255,255,255,0.18)", borderRadius: "2rem",
+            padding: "48px 44px",
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
+              {[
+                { title: "Digital Status", desc: "Your profile attracts the right deals — opportunities come to you." },
+                { title: "Borderless Benefits", desc: "Finance to lifestyle, all optimized in one place." },
+                { title: "Personal Concierge", desc: "Our engine curates what matters — before you even search." },
+              ].map((item, i) => (
+                <div key={i}>
+                  <h3 style={{ fontFamily: gambarino, fontSize: "26px", fontWeight: 400, color: "#F0EDE6", margin: "0 0 12px" }}>{item.title}</h3>
+                  <p style={{
+                    fontFamily: spaceMono, fontSize: "15px", color: "rgba(240,237,230,0.7)",
+                    margin: 0, lineHeight: 1.7,
+                  }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </RevealSection>
       </section>
 
       {/* LABELS SHOWCASE */}
       <section style={{ padding: "100px 0", overflow: "hidden" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 40px" }}>
-          <RevealSection>
-            <p style={{ fontFamily: spaceMono, fontSize: "10px", color: "#7F9BAA", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>20 behavioral types</p>
-          </RevealSection>
-          <RevealSection delay={0.1}>
-            <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 64px", lineHeight: 1.15 }}>
-              Which type are you?
-            </h2>
-          </RevealSection>
-        </div>
 
-        <RevealSection delay={0.2}>
-          <div style={{ display: "flex", animation: "marquee 30s linear infinite", width: "fit-content", marginBottom: "12px" }}>
+        {/* Marquee row 1 */}
+        <RevealSection delay={0.1}>
+          <div style={{ display: "flex", animation: "marquee 30s linear infinite", width: "fit-content", marginBottom: "40px" }}>
             {[...LABELS, ...LABELS].map((label, i) => (
               <div key={i} style={{
-                fontFamily: spaceMono, fontSize: "12px",
-                color: hoveredLabel === label ? "#F0EDE6" : "rgba(255,255,255,0.3)",
+                fontFamily: spaceMono, fontSize: "16px",
+                color: hoveredLabel === label ? "#F0EDE6" : "rgba(255,255,255,0.45)",
                 letterSpacing: "1px", padding: "14px 28px",
-                border: `1px solid ${hoveredLabel === label ? "rgba(127,155,170,0.3)" : "rgba(255,255,255,0.06)"}`,
+                border: `1px solid ${hoveredLabel === label ? "rgba(240,237,230,0.2)" : "rgba(255,255,255,0.12)"}`,
                 borderRadius: "100px", whiteSpace: "nowrap", marginRight: "10px",
                 transition: "all 0.3s ease", cursor: "default",
-                background: hoveredLabel === label ? "rgba(127,155,170,0.08)" : "transparent",
+                background: hoveredLabel === label ? "rgba(240,237,230,0.05)" : "transparent",
               }}
                 onMouseEnter={() => setHoveredLabel(label)}
                 onMouseLeave={() => setHoveredLabel(null)}
@@ -281,43 +338,42 @@ export default function GraviiLanding() {
           </div>
         </RevealSection>
 
-        <RevealSection delay={0.3}>
-          <div style={{ display: "flex", animation: "marquee 35s linear infinite reverse", width: "fit-content" }}>
-            {[...LABELS.slice().reverse(), ...LABELS.slice().reverse()].map((label, i) => (
-              <div key={i} style={{
-                fontFamily: spaceMono, fontSize: "12px",
-                color: hoveredLabel === label ? "#F0EDE6" : "rgba(255,255,255,0.3)",
-                letterSpacing: "1px", padding: "14px 28px",
-                border: `1px solid ${hoveredLabel === label ? "rgba(127,155,170,0.3)" : "rgba(255,255,255,0.06)"}`,
-                borderRadius: "100px", whiteSpace: "nowrap", marginRight: "10px",
-                transition: "all 0.3s ease", cursor: "default",
-                background: hoveredLabel === label ? "rgba(127,155,170,0.08)" : "transparent",
-              }}
-                onMouseEnter={() => setHoveredLabel(label)}
-                onMouseLeave={() => setHoveredLabel(null)}
-              >{label}</div>
-            ))}
-          </div>
-        </RevealSection>
-
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "48px 40px 0" }}>
-          <RevealSection delay={0.4}>
-            <button style={{
-              fontFamily: spaceMono, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
-              color: "#F0EDE6", background: "transparent", border: "1px solid rgba(255,255,255,0.15)",
-              padding: "14px 32px", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#7F9BAA"; e.currentTarget.style.color = "#7F9BAA"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; e.currentTarget.style.color = "#F0EDE6"; }}
-            >Connect to find yours</button>
+        {/* Center title + label below */}
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 40px", textAlign: "center" }}>
+          <RevealSection delay={0.2}>
+            <h2 style={{ fontFamily: gambarino, fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 12px", lineHeight: 1.15, padding: "20px 0 0" }}>
+              Which type are you?
+            </h2>
+            <p style={{ fontFamily: spaceMono, fontSize: "15px", color: "#F0EDE6", letterSpacing: "3px", textTransform: "uppercase", margin: "0 0 20px", opacity: 0.6 }}>20 behavioral types</p>
           </RevealSection>
         </div>
+
+        {/* Marquee row 2 */}
+        <RevealSection delay={0.3}>
+          <div style={{ display: "flex", animation: "marquee 35s linear infinite reverse", width: "fit-content", marginTop: "40px" }}>
+            {[...LABELS.slice().reverse(), ...LABELS.slice().reverse()].map((label, i) => (
+              <div key={i} style={{
+                fontFamily: spaceMono, fontSize: "16px",
+                color: hoveredLabel === label ? "#F0EDE6" : "rgba(255,255,255,0.45)",
+                letterSpacing: "1px", padding: "14px 28px",
+                border: `1px solid ${hoveredLabel === label ? "rgba(240,237,230,0.2)" : "rgba(255,255,255,0.12)"}`,
+                borderRadius: "100px", whiteSpace: "nowrap", marginRight: "10px",
+                transition: "all 0.3s ease", cursor: "default",
+                background: hoveredLabel === label ? "rgba(240,237,230,0.05)" : "transparent",
+              }}
+                onMouseEnter={() => setHoveredLabel(label)}
+                onMouseLeave={() => setHoveredLabel(null)}
+              >{label}</div>
+            ))}
+          </div>
+        </RevealSection>
+
       </section>
 
       {/* SOCIAL PROOF */}
       <section style={{ padding: "80px 40px", maxWidth: "1200px", margin: "0 auto" }}>
         <RevealSection>
-          <p style={{ fontFamily: spaceMono, fontSize: "10px", color: "#7F9BAA", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "48px", textAlign: "center" }}>
+          <p style={{ fontFamily: spaceMono, fontSize: "18px", color: "rgba(240,237,230,0.6)", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "48px", textAlign: "center" }}>
             All your activity, every chain — one profile.
           </p>
         </RevealSection>
@@ -331,34 +387,11 @@ export default function GraviiLanding() {
               <RevealSection key={i} delay={0.1 * (i + 1)}>
                 <div style={{ textAlign: "center" }}>
                   <div style={{ fontFamily: gambarino, fontSize: "48px", color: "#F0EDE6", marginBottom: "8px" }}>{stat.num}</div>
-                  <div style={{ fontFamily: spaceMono, fontSize: "10px", color: "rgba(255,255,255,0.3)", letterSpacing: "2px", textTransform: "uppercase" }}>{stat.label}</div>
+                  <div style={{ fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.45)", letterSpacing: "2px", textTransform: "uppercase" }}>{stat.label}</div>
                 </div>
               </RevealSection>
             ))}
           </div>
-        </RevealSection>
-      </section>
-
-      {/* VISION TEASER */}
-      <section style={{
-        padding: "140px 40px", textAlign: "center",
-        background: "linear-gradient(180deg, #000 0%, #0A0A0A 50%, #000 100%)",
-        position: "relative",
-      }}>
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at center, rgba(127,155,170,0.03) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }} />
-        <RevealSection>
-          <h2 style={{ fontFamily: gambarino, fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 400, color: "#F0EDE6", margin: "0 0 16px", lineHeight: 1.3, position: "relative" }}>
-            We begin as a hub.
-          </h2>
-        </RevealSection>
-        <RevealSection delay={0.2}>
-          <h2 style={{ fontFamily: gambarino, fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 400, color: "rgba(127,155,170,0.6)", margin: 0, lineHeight: 1.3, position: "relative" }}>
-            We become your lifestyle.
-          </h2>
         </RevealSection>
       </section>
 
@@ -373,19 +406,19 @@ export default function GraviiLanding() {
           <div style={{ display: "flex", gap: "12px", maxWidth: "480px", margin: "0 auto" }}>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email..."
               style={{
-                flex: 1, fontFamily: spaceMono, fontSize: "13px", color: "#F0EDE6",
-                background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)",
+                flex: 1, fontFamily: spaceMono, fontSize: "15px", color: "#F0EDE6",
+                background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.18)",
                 borderRadius: "8px", padding: "14px 20px", outline: "none", transition: "border-color 0.3s ease",
               }}
-              onFocus={e => e.currentTarget.style.borderColor = "rgba(127,155,170,0.3)"}
+              onFocus={e => e.currentTarget.style.borderColor = "rgba(240,237,230,0.2)"}
               onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
             />
             <button style={{
-              fontFamily: spaceMono, fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
+              fontFamily: spaceMono, fontSize: "15px", letterSpacing: "2px", textTransform: "uppercase",
               color: "#000", background: "#F0EDE6", border: "none", padding: "14px 28px",
               borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease", whiteSpace: "nowrap",
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#7F9BAA"; }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(240,237,230,0.85)"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "#F0EDE6"; }}
             >Join</button>
           </div>
@@ -394,23 +427,23 @@ export default function GraviiLanding() {
 
       {/* FOOTER */}
       <footer style={{
-        padding: "48px 40px", borderTop: "1px solid rgba(255,255,255,0.05)",
+        padding: "48px 40px", borderTop: "1px solid rgba(255,255,255,0.18)",
         maxWidth: "1200px", margin: "0 auto", display: "flex",
         justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px",
       }}>
-        <span style={{ fontFamily: gambarino, fontSize: "18px", color: "rgba(255,255,255,0.3)" }}>Gravii</span>
+        <span style={{ fontFamily: gambarino, fontSize: "18px", color: "rgba(255,255,255,0.45)" }}>Gravii</span>
         <div style={{ display: "flex", gap: "32px" }}>
           {["X", "Docs", "Contact"].map(link => (
             <span key={link} style={{
-              fontFamily: spaceMono, fontSize: "11px", color: "rgba(255,255,255,0.25)",
+              fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.4)",
               letterSpacing: "1px", cursor: "pointer", transition: "color 0.3s ease",
             }}
-              onMouseEnter={e => e.currentTarget.style.color = "#7F9BAA"}
-              onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.25)"}
+              onMouseEnter={e => e.currentTarget.style.color = "rgba(240,237,230,0.6)"}
+              onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
             >{link}</span>
           ))}
         </div>
-        <span style={{ fontFamily: spaceMono, fontSize: "10px", color: "rgba(255,255,255,0.15)", letterSpacing: "0.5px" }}>
+        <span style={{ fontFamily: spaceMono, fontSize: "15px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.5px" }}>
           © 2025 Gravii. All rights reserved.
         </span>
       </footer>
